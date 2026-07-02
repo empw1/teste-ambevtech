@@ -47,6 +47,34 @@ describe('API - Usuários', () => {
     })
   })
 
+  it('CT04b - Não deve permitir cadastro com email já existente', () => {
+    const email = faker.internet.email()
+    const payload = {
+      nome: faker.person.fullName(),
+      email,
+      password: usuario.cadastro.password,
+      administrador: usuario.cadastro.administrador,
+    }
+
+    cy.request({
+      method: 'POST',
+      url: `${Cypress.env('apiUrl')}/usuarios`,
+      body: payload,
+    }).then((response) => {
+      usuariosIds.push(response.body._id)
+
+      cy.request({
+        method: 'POST',
+        url: `${Cypress.env('apiUrl')}/usuarios`,
+        body: payload,
+        failOnStatusCode: false,
+      }).then((duplicadoResponse) => {
+        expect(duplicadoResponse.status).to.eq(400)
+        expect(duplicadoResponse.body).to.have.property('message', 'Este email já está sendo usado')
+      })
+    })
+  })
+
   it('CT05 - Deve autenticar o usuário e retornar token Bearer válido', () => {
     const email = faker.internet.email()
 
