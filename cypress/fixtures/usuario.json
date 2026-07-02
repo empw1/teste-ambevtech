@@ -1,0 +1,16 @@
+{
+  "cadastro": {
+    "nome": "Usuário Teste Cypress",
+    "email": "usuario.cypress@teste.com",
+    "password": "Cypress@123",
+    "administrador": "true"
+  },
+  "login": {
+    "email": "usuario.cypress@teste.com",
+    "password": "Cypress@123"
+  },
+  "loginInvalido": {
+    "email": "naoexiste@teste.com",
+    "password": "SenhaErrada123"
+  }
+}
