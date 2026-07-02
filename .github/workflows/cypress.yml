@@ -1,0 +1,50 @@
+name: Cypress Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  cypress-run:
+    name: Executar Testes Cypress
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Executar testes de API
+        uses: cypress-io/github-action@v6
+        with:
+          spec: cypress/e2e/api/**/*.cy.js
+          browser: chrome
+          headed: false
+
+      - name: Executar testes de Frontend
+        uses: cypress-io/github-action@v6
+        with:
+          spec: cypress/e2e/frontend/**/*.cy.js
+          browser: chrome
+          headed: false
+          install: false
+
+      - name: Upload de screenshots em caso de falha
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
