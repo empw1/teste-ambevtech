@@ -28,3 +28,11 @@ Cypress.Commands.add('criarUsuarioViaApi', (usuario) => {
     return { ...payload, _id: response.body._id }
   })
 })
+
+Cypress.Commands.add('deletarUsuarioViaApi', (id) => {
+  cy.request({
+    method: 'DELETE',
+    url: `${Cypress.env('apiUrl')}/usuarios/${id}`,
+    failOnStatusCode: false,
+  })
+})
