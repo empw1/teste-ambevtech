@@ -15,12 +15,15 @@ describe('API - Usuários', () => {
   })
 
   it('CT04 - Deve criar um novo usuário com sucesso via API', () => {
+    const nome = faker.person.fullName()
+    const email = faker.internet.email()
+
     cy.request({
       method: 'POST',
       url: `${Cypress.env('apiUrl')}/usuarios`,
       body: {
-        nome: faker.person.fullName(),
-        email: faker.internet.email(),
+        nome,
+        email,
         password: usuario.cadastro.password,
         administrador: usuario.cadastro.administrador,
       },
@@ -30,6 +33,17 @@ describe('API - Usuários', () => {
       expect(response.status).to.eq(201)
       expect(response.body).to.have.property('message', 'Cadastro realizado com sucesso')
       expect(response.body).to.have.property('_id').and.to.be.a('string').and.to.not.be.empty
+      expect(response.duration).to.be.lessThan(3000)
+
+      cy.request({
+        method: 'GET',
+        url: `${Cypress.env('apiUrl')}/usuarios?email=${email}`,
+      }).then((getResponse) => {
+        const criado = getResponse.body.usuarios[0]
+        expect(criado.nome).to.eq(nome)
+        expect(criado.email).to.eq(email)
+        expect(criado.administrador).to.eq(usuario.cadastro.administrador)
+      })
     })
   })
 
@@ -60,6 +74,10 @@ describe('API - Usuários', () => {
         expect(loginResponse.body).to.have.property('message', 'Login realizado com sucesso')
         expect(loginResponse.body).to.have.property('authorization')
           .and.to.match(/^Bearer\s.+/)
+        expect(loginResponse.duration).to.be.lessThan(3000)
+
+        const token = loginResponse.body.authorization.split(' ')[1]
+        expect(token).to.be.a('string').and.to.have.length.greaterThan(10)
       })
     })
   })
