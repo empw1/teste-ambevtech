@@ -17,6 +17,8 @@ Projeto de testes automatizados E2E desenvolvido como parte do processo seletivo
 
 - [Node.js](https://nodejs.org/) v20+
 - [Cypress](https://www.cypress.io/) v13
+- [@faker-js/faker](https://fakerjs.dev/) — geração de dados dinâmicos
+- [ESLint](https://eslint.org/) + [eslint-plugin-cypress](https://github.com/cypress-io/eslint-plugin-cypress) — análise estática
 - [GitHub Actions](https://github.com/features/actions) — CI/CD
 
 ---
@@ -30,14 +32,14 @@ Projeto de testes automatizados E2E desenvolvido como parte do processo seletivo
 ├── cypress/
 │   ├── e2e/
 │   │   ├── frontend/
-│   │   │   ├── cadastro.cy.js  # CT01
-│   │   │   └── login.cy.js     # CT02, CT03
+│   │   │   ├── cadastro.cy.js  # CT01b, CT01
+│   │   │   └── login.cy.js     # CT02, CT02b, CT03
 │   │   └── api/
-│   │       ├── usuarios.cy.js  # CT04, CT05
+│   │       ├── usuarios.cy.js  # CT04, CT04b, CT05
 │   │       └── produtos.cy.js  # CT06
 │   ├── fixtures/
-│   │   ├── usuario.json        # Dados de usuário
-│   │   └── produto.json        # Dados de produto
+│   │   ├── usuario.json        # Dados base de usuário
+│   │   └── produto.json        # Dados base de produto
 │   ├── pages/
 │   │   ├── CadastroPage.js     # Page Object - Cadastro
 │   │   └── LoginPage.js        # Page Object - Login
@@ -45,6 +47,7 @@ Projeto de testes automatizados E2E desenvolvido como parte do processo seletivo
 │       ├── commands.js         # Comandos customizados
 │       └── e2e.js              # Configuração global
 ├── cypress.config.js
+├── eslint.config.js
 └── package.json
 ```
 
@@ -77,8 +80,12 @@ Projeto de testes automatizados E2E desenvolvido como parte do processo seletivo
 
 - **Page Objects** — encapsulamento dos seletores e ações de cada página
 - **Fixtures** — dados de teste centralizados em arquivos JSON
-- **Custom Commands** — comandos reutilizáveis (`cy.criarUsuarioViaApi`)
-- **Conventional Commits** — mensagens de commit padronizadas (`feat`, `test`, `ci`)
+- **Custom Commands** — comandos reutilizáveis (`cy.criarUsuarioViaApi`, `cy.deletarUsuarioViaApi`, `cy.loginViaApi`, `cy.criarUsuarioELoginViaApi`)
+- **Faker** — geração de dados dinâmicos para evitar conflitos entre execuções
+- **Limpeza pós-teste** — remoção de dados criados via `after/afterEach` para manter o ambiente limpo
+- **Retry automático** — reexecução de testes falhos na pipeline (`runMode: 2`)
+- **ESLint** — análise estática com regras específicas para Cypress
+- **Conventional Commits** — mensagens de commit padronizadas (`test:`, `ci:`, `fix:`, `docs:`, `config:`, `chore:`)
 
 ---
 
@@ -126,6 +133,7 @@ A pipeline é disparada automaticamente em todo **push** ou **pull request** par
 1. Checkout do repositório
 2. Configuração do Node.js v20
 3. Instalação das dependências (`npm ci`)
-4. Execução dos testes de API
-5. Execução dos testes de Frontend
-6. Upload de screenshots em caso de falha (artefato)
+4. Análise estática do código (`npm run lint`)
+5. Execução dos testes de API
+6. Execução dos testes de Frontend
+7. Upload de screenshots em caso de falha (artefato)
