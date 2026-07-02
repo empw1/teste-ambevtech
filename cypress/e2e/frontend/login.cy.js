@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker/locale/pt_BR'
 import loginPage from '../../pages/LoginPage'
 
 describe('Frontend - Autenticação de Usuário', () => {
@@ -15,7 +16,7 @@ describe('Frontend - Autenticação de Usuário', () => {
 
   it('CT02 - Deve realizar login com credenciais válidas', () => {
     cy.criarUsuarioViaApi({
-      nome: usuario.cadastro.nome,
+      nome: faker.person.fullName(),
       password: usuario.cadastro.password,
       administrador: usuario.cadastro.administrador,
     }).then((usuarioCriado) => {
@@ -28,8 +29,8 @@ describe('Frontend - Autenticação de Usuário', () => {
 
   it('CT03 - Deve exibir mensagem de erro ao tentar login com credenciais inválidas', () => {
     loginPage.login(
-      usuario.loginInvalido.email,
-      usuario.loginInvalido.password
+      faker.internet.email(),
+      faker.internet.password()
     )
 
     cy.url().should('include', '/login')

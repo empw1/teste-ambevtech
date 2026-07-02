@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker/locale/pt_BR'
 import cadastroPage from '../../pages/CadastroPage'
 
 describe('Frontend - Cadastro de Usuário', () => {
@@ -14,9 +15,9 @@ describe('Frontend - Cadastro de Usuário', () => {
   })
 
   it('CT01 - Deve cadastrar um novo usuário com sucesso', () => {
-    const emailUnico = `cypress_${Date.now()}@teste.com`
+    const emailUnico = faker.internet.email()
 
-    cadastroPage.fillNome(usuario.cadastro.nome)
+    cadastroPage.fillNome(faker.person.fullName())
     cadastroPage.fillEmail(emailUnico)
     cadastroPage.fillPassword(usuario.cadastro.password)
     cadastroPage.submit()

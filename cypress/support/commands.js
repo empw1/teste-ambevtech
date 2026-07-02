@@ -1,7 +1,5 @@
-/**
- * Cria um usuário via API e realiza login, retornando o token de autenticação.
- * Útil para preparar o estado antes dos testes de frontend.
- */
+import { faker } from '@faker-js/faker/locale/pt_BR'
+
 Cypress.Commands.add('loginViaApi', (email, password) => {
   cy.request({
     method: 'POST',
@@ -16,13 +14,11 @@ Cypress.Commands.add('loginViaApi', (email, password) => {
   })
 })
 
-/**
- * Cria um usuário administrador via API para uso nos testes.
- * Gera email único por timestamp para evitar conflitos.
- */
 Cypress.Commands.add('criarUsuarioViaApi', (usuario) => {
-  const emailUnico = `cypress_${Date.now()}@teste.com`
-  const payload = { ...usuario, email: emailUnico }
+  const payload = {
+    ...usuario,
+    email: faker.internet.email(),
+  }
 
   return cy.request({
     method: 'POST',

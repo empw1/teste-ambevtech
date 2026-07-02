@@ -1,36 +1,31 @@
+import { faker } from '@faker-js/faker/locale/pt_BR'
+
 describe('API - Produtos', () => {
-  let produto
   let usuario
   let token
 
   before(() => {
-    cy.fixture('produto').then((fixtureProduto) => {
-      produto = fixtureProduto
-    })
-
     cy.fixture('usuario').then((fixtureUsuario) => {
       usuario = fixtureUsuario
     })
   })
 
   beforeEach(() => {
-    const emailUnico = `cypress_produto_${Date.now()}@teste.com`
-
     cy.request({
       method: 'POST',
       url: `${Cypress.env('apiUrl')}/usuarios`,
       body: {
-        nome: usuario.cadastro.nome,
-        email: emailUnico,
+        nome: faker.person.fullName(),
+        email: faker.internet.email(),
         password: usuario.cadastro.password,
         administrador: 'true',
       },
-    }).then(() => {
+    }).then((responseUsuario) => {
       cy.request({
         method: 'POST',
         url: `${Cypress.env('apiUrl')}/login`,
         body: {
-          email: emailUnico,
+          email: responseUsuario.requestBody.email,
           password: usuario.cadastro.password,
         },
       }).then((response) => {
@@ -40,17 +35,15 @@ describe('API - Produtos', () => {
   })
 
   it('CT06 - Deve criar um produto com sucesso utilizando token de autenticação', () => {
-    const nomeProdutoUnico = `${produto.novo.nome} ${Date.now()}`
-
     cy.request({
       method: 'POST',
       url: `${Cypress.env('apiUrl')}/produtos`,
       headers: { Authorization: token },
       body: {
-        nome: nomeProdutoUnico,
-        preco: produto.novo.preco,
-        descricao: produto.novo.descricao,
-        quantidade: produto.novo.quantidade,
+        nome: faker.commerce.productName(),
+        preco: faker.number.int({ min: 1, max: 1000 }),
+        descricao: faker.commerce.productDescription(),
+        quantidade: faker.number.int({ min: 1, max: 100 }),
       },
     }).then((response) => {
       expect(response.status).to.eq(201)

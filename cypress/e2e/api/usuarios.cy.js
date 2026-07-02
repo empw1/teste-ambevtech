@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker/locale/pt_BR'
+
 describe('API - Usuários', () => {
   let usuario
 
@@ -8,14 +10,12 @@ describe('API - Usuários', () => {
   })
 
   it('CT04 - Deve criar um novo usuário com sucesso via API', () => {
-    const emailUnico = `cypress_api_${Date.now()}@teste.com`
-
     cy.request({
       method: 'POST',
       url: `${Cypress.env('apiUrl')}/usuarios`,
       body: {
-        nome: usuario.cadastro.nome,
-        email: emailUnico,
+        nome: faker.person.fullName(),
+        email: faker.internet.email(),
         password: usuario.cadastro.password,
         administrador: usuario.cadastro.administrador,
       },
@@ -27,14 +27,14 @@ describe('API - Usuários', () => {
   })
 
   it('CT05 - Deve autenticar o usuário e retornar token Bearer válido', () => {
-    const emailUnico = `cypress_login_${Date.now()}@teste.com`
+    const email = faker.internet.email()
 
     cy.request({
       method: 'POST',
       url: `${Cypress.env('apiUrl')}/usuarios`,
       body: {
-        nome: usuario.cadastro.nome,
-        email: emailUnico,
+        nome: faker.person.fullName(),
+        email,
         password: usuario.cadastro.password,
         administrador: usuario.cadastro.administrador,
       },
@@ -43,7 +43,7 @@ describe('API - Usuários', () => {
         method: 'POST',
         url: `${Cypress.env('apiUrl')}/login`,
         body: {
-          email: emailUnico,
+          email,
           password: usuario.cadastro.password,
         },
       }).then((response) => {
