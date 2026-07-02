@@ -3,6 +3,7 @@ import loginPage from '../../pages/LoginPage'
 
 describe('Frontend - Autenticação de Usuário', () => {
   let usuario
+  let usuarioCriadoId
 
   before(() => {
     cy.fixture('usuario').then((fixture) => {
@@ -14,12 +15,19 @@ describe('Frontend - Autenticação de Usuário', () => {
     loginPage.visit()
   })
 
+  after(() => {
+    if (usuarioCriadoId) {
+      cy.deletarUsuarioViaApi(usuarioCriadoId)
+    }
+  })
+
   it('CT02 - Deve realizar login com credenciais válidas', () => {
     cy.criarUsuarioViaApi({
       nome: faker.person.fullName(),
       password: usuario.cadastro.password,
       administrador: usuario.cadastro.administrador,
     }).then((usuarioCriado) => {
+      usuarioCriadoId = usuarioCriado._id
       loginPage.login(usuarioCriado.email, usuarioCriado.password)
 
       cy.url().should('include', '/admin/home')

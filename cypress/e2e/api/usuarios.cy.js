@@ -2,11 +2,16 @@ import { faker } from '@faker-js/faker/locale/pt_BR'
 
 describe('API - Usuários', () => {
   let usuario
+  const usuariosIds = []
 
   before(() => {
     cy.fixture('usuario').then((fixture) => {
       usuario = fixture
     })
+  })
+
+  after(() => {
+    usuariosIds.forEach((id) => cy.deletarUsuarioViaApi(id))
   })
 
   it('CT04 - Deve criar um novo usuário com sucesso via API', () => {
@@ -20,6 +25,8 @@ describe('API - Usuários', () => {
         administrador: usuario.cadastro.administrador,
       },
     }).then((response) => {
+      usuariosIds.push(response.body._id)
+
       expect(response.status).to.eq(201)
       expect(response.body).to.have.property('message', 'Cadastro realizado com sucesso')
       expect(response.body).to.have.property('_id').and.to.be.a('string').and.to.not.be.empty
@@ -38,7 +45,9 @@ describe('API - Usuários', () => {
         password: usuario.cadastro.password,
         administrador: usuario.cadastro.administrador,
       },
-    }).then(() => {
+    }).then((response) => {
+      usuariosIds.push(response.body._id)
+
       cy.request({
         method: 'POST',
         url: `${Cypress.env('apiUrl')}/login`,
@@ -46,10 +55,10 @@ describe('API - Usuários', () => {
           email,
           password: usuario.cadastro.password,
         },
-      }).then((response) => {
-        expect(response.status).to.eq(200)
-        expect(response.body).to.have.property('message', 'Login realizado com sucesso')
-        expect(response.body).to.have.property('authorization')
+      }).then((loginResponse) => {
+        expect(loginResponse.status).to.eq(200)
+        expect(loginResponse.body).to.have.property('message', 'Login realizado com sucesso')
+        expect(loginResponse.body).to.have.property('authorization')
           .and.to.match(/^Bearer\s.+/)
       })
     })
