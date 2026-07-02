@@ -36,3 +36,11 @@ Cypress.Commands.add('deletarUsuarioViaApi', (id) => {
     failOnStatusCode: false,
   })
 })
+
+Cypress.Commands.add('criarUsuarioELoginViaApi', (dadosUsuario) => {
+  return cy.criarUsuarioViaApi(dadosUsuario).then((usuarioCriado) => {
+    return cy.loginViaApi(usuarioCriado.email, usuarioCriado.password).then((response) => {
+      return { ...usuarioCriado, authorization: response.body.authorization }
+    })
+  })
+})
