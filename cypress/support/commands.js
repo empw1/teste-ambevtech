@@ -8,7 +8,8 @@ Cypress.Commands.add('loginViaApi', (email, password) => {
     failOnStatusCode: false,
   }).then((response) => {
     if (response.status === 200) {
-      window.localStorage.setItem('token', response.body.authorization)
+      window.localStorage.setItem('serverest/userToken', response.body.authorization)
+      window.localStorage.setItem('serverest/userEmail', email)
     }
     return response
   })
@@ -40,6 +41,9 @@ Cypress.Commands.add('deletarUsuarioViaApi', (id) => {
 Cypress.Commands.add('criarUsuarioELoginViaApi', (dadosUsuario) => {
   return cy.criarUsuarioViaApi(dadosUsuario).then((usuarioCriado) => {
     return cy.loginViaApi(usuarioCriado.email, usuarioCriado.password).then((response) => {
+      if (response.status === 200) {
+        window.localStorage.setItem('serverest/userNome', usuarioCriado.nome)
+      }
       return { ...usuarioCriado, authorization: response.body.authorization }
     })
   })
