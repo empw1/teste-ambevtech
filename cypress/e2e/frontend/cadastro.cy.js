@@ -21,6 +21,15 @@ describe('Frontend - Cadastro de Usuário', () => {
     }
   })
 
+  it('CT01b - Não deve permitir cadastro com campos obrigatórios vazios', () => {
+    cadastroPage.submit()
+
+    cy.url().should('include', '/cadastrarusuarios')
+    cy.contains('Nome é obrigatório').should('be.visible')
+    cy.contains('Email é obrigatório').should('be.visible')
+    cy.contains('Password é obrigatório').should('be.visible')
+  })
+
   it('CT01 - Deve cadastrar um novo usuário com sucesso', () => {
     const email = faker.internet.email()
 
