@@ -54,19 +54,22 @@ Projeto de testes automatizados E2E desenvolvido como parte do processo seletivo
 
 ### Frontend (E2E)
 
-| ID | Descrição |
-|----|-----------|
-| CT01 | Deve cadastrar um novo usuário com sucesso |
-| CT02 | Deve realizar login com credenciais válidas |
-| CT03 | Deve exibir mensagem de erro ao tentar login com credenciais inválidas |
+| ID | Tipo | Descrição |
+|----|------|-----------|
+| CT01b | Negativo | Não deve permitir cadastro com campos obrigatórios vazios |
+| CT01 | Positivo | Deve cadastrar um novo usuário com sucesso |
+| CT02 | Positivo | Deve realizar login com credenciais válidas |
+| CT02b | Integração | Deve autenticar via API e manter sessão ativa no frontend |
+| CT03 | Negativo | Deve exibir mensagem de erro ao tentar login com credenciais inválidas |
 
 ### API
 
-| ID | Descrição |
-|----|-----------|
-| CT04 | Deve criar um novo usuário com sucesso via API |
-| CT05 | Deve autenticar o usuário e retornar token Bearer válido |
-| CT06 | Deve criar um produto com sucesso utilizando token de autenticação |
+| ID | Tipo | Descrição |
+|----|------|-----------|
+| CT04 | Positivo | Deve criar um novo usuário com sucesso via API |
+| CT04b | Negativo | Não deve permitir cadastro com email já existente |
+| CT05 | Positivo | Deve autenticar o usuário e retornar token Bearer válido |
+| CT06 | Positivo | Deve criar um produto com sucesso utilizando token de autenticação |
 
 ---
 
