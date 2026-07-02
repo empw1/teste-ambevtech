@@ -6,9 +6,14 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "cy:run:frontend": "cypress run --spec 'cypress/e2e/frontend/**/*.cy.js'",
-    "cy:run:api": "cypress run --spec 'cypress/e2e/api/**/*.cy.js'"
+    "cy:run:api": "cypress run --spec 'cypress/e2e/api/**/*.cy.js'",
+    "lint": "eslint cypress/**/*.js",
+    "lint:fix": "eslint cypress/**/*.js --fix"
   },
   "devDependencies": {
-    "cypress": "^13.17.0"
+    "cypress": "^13.17.0",
+    "eslint": "^10.6.0",
+    "eslint-plugin-cypress": "^3.6.0",
+    "globals": "^17.7.0"
   }
 }

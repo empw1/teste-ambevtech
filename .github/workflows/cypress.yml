@@ -26,6 +26,9 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
+      - name: Análise estática do código (lint)
+        run: npm run lint
+
       - name: Executar testes de API
         uses: cypress-io/github-action@v6
         with:
