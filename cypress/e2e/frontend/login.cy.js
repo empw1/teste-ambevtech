@@ -35,6 +35,20 @@ describe('Frontend - Autenticação de Usuário', () => {
     })
   })
 
+  it('CT02b - Deve autenticar via API e manter sessão ativa no frontend', () => {
+    cy.criarUsuarioELoginViaApi({
+      nome: faker.person.fullName(),
+      password: usuario.cadastro.password,
+      administrador: usuario.cadastro.administrador,
+    }).then((sessao) => {
+      usuarioCriadoId = sessao._id
+
+      cy.visit('/admin/home')
+      cy.url().should('include', '/admin/home')
+      cy.contains('Bem Vindo').should('be.visible')
+    })
+  })
+
   it('CT03 - Deve exibir mensagem de erro ao tentar login com credenciais inválidas', () => {
     loginPage.login(
       faker.internet.email(),
