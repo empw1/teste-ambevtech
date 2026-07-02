@@ -1,0 +1,8 @@
+{
+  "novo": {
+    "nome": "Produto Cypress Teste",
+    "preco": 199,
+    "descricao": "Produto criado via teste automatizado Cypress",
+    "quantidade": 50
+  }
+}
