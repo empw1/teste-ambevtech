@@ -1,0 +1,14 @@
+{
+  "name": "teste-ambevtech",
+  "version": "1.0.0",
+  "description": "Projeto de testes E2E com Cypress para o processo seletivo AmbevTech",
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "cy:run:frontend": "cypress run --spec 'cypress/e2e/frontend/**/*.cy.js'",
+    "cy:run:api": "cypress run --spec 'cypress/e2e/api/**/*.cy.js'"
+  },
+  "devDependencies": {
+    "cypress": "^13.17.0"
+  }
+}
