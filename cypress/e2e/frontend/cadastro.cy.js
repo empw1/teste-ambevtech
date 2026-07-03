@@ -21,7 +21,7 @@ describe('Frontend - Cadastro de Usuário', () => {
     }
   })
 
-  it('CT01b - Não deve permitir cadastro com campos obrigatórios vazios', () => {
+  it('CT01b - Não deve permitir cadastro com campos obrigatórios vazios', { tags: ['@regressivo', '@frontend'] }, () => {
     cadastroPage.submit()
 
     cy.url().should('include', '/cadastrarusuarios')
@@ -30,7 +30,7 @@ describe('Frontend - Cadastro de Usuário', () => {
     cy.contains('Password é obrigatório').should('be.visible')
   })
 
-  it('CT01 - Deve cadastrar um novo usuário com sucesso', () => {
+  it('CT01 - Deve cadastrar um novo usuário com sucesso', { tags: ['@smoke', '@regressivo', '@frontend'] }, () => {
     const email = faker.internet.email()
 
     cadastroPage.fillNome(faker.person.fullName())

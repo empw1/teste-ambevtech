@@ -21,7 +21,7 @@ describe('Frontend - Autenticação de Usuário', () => {
     }
   })
 
-  it('CT02 - Deve realizar login com credenciais válidas', () => {
+  it('CT02 - Deve realizar login com credenciais válidas', { tags: ['@smoke', '@regressivo', '@frontend'] }, () => {
     cy.criarUsuarioViaApi({
       nome: faker.person.fullName(),
       password: usuario.cadastro.password,
@@ -35,7 +35,7 @@ describe('Frontend - Autenticação de Usuário', () => {
     })
   })
 
-  it('CT02b - Deve autenticar via API e manter sessão ativa no frontend', () => {
+  it('CT02b - Deve autenticar via API e manter sessão ativa no frontend', { tags: ['@regressivo', '@frontend'] }, () => {
     cy.criarUsuarioELoginViaApi({
       nome: faker.person.fullName(),
       password: usuario.cadastro.password,
@@ -49,7 +49,7 @@ describe('Frontend - Autenticação de Usuário', () => {
     })
   })
 
-  it('CT03 - Deve exibir mensagem de erro ao tentar login com credenciais inválidas', () => {
+  it('CT03 - Deve exibir mensagem de erro ao tentar login com credenciais inválidas', { tags: ['@regressivo', '@frontend'] }, () => {
     loginPage.login(
       faker.internet.email(),
       faker.internet.password()

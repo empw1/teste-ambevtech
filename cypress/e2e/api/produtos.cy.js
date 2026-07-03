@@ -54,7 +54,7 @@ describe('API - Produtos', () => {
     }
   })
 
-  it('CT06 - Deve criar um produto com sucesso utilizando token de autenticação', () => {
+  it('CT06 - Deve criar um produto com sucesso utilizando token de autenticação', { tags: ['@smoke', '@regressivo', '@api'] }, () => {
     const nomeProduto = faker.commerce.productName()
     const preco = faker.number.int({ min: 1, max: 1000 })
     const quantidade = faker.number.int({ min: 1, max: 100 })
