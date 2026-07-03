@@ -166,23 +166,71 @@ npx cypress run --env grepTags="@smoke @frontend"
 
 ---
 
+## Fluxo de Branches
+
+O projeto adota um **Git Flow simplificado** com duas branches protegidas para garantir qualidade e rastreabilidade.
+
+```
+feature/* ──→ PR ──→ develop  (smoke: 5 cenários)
+                         │
+                         └──→ PR ──→ main  (regressivo: 9 cenários)
+```
+
+### Regras de contribuição
+
+| Branch | Aceita push direto? | Aceita PR de | Testes exigidos |
+|--------|---------------------|--------------|-----------------|
+| `develop` | ❌ | `feature/*` | `@smoke` deve passar |
+| `main` | ❌ | `develop` | `@regressivo` deve passar |
+
+### Passo a passo para contribuir
+
+```bash
+# 1. Crie sua branch a partir do develop
+git checkout develop
+git pull origin develop
+git checkout -b feature/minha-feature
+
+# 2. Implemente e commite suas alterações
+git add .
+git commit -m "test: descrição da alteração"
+
+# 3. Abra um PR para develop (smoke roda automaticamente)
+git push origin feature/minha-feature
+# → Abra o PR no GitHub apontando para develop
+
+# 4. Após aprovação e merge no develop,
+#    abra um PR de develop para main (regressivo roda automaticamente)
+```
+
+---
+
 ## CI/CD — GitHub Actions
 
-A pipeline possui **3 jobs** com triggers distintos:
+A pipeline possui **2 jobs** com triggers baseados na branch de destino:
 
-### Job 1 — Regressivo Completo (Push e PR)
+### Job 1 — Smoke Tests (develop)
 
-Disparado em todo **push** ou **pull request** para a branch `main`. Executa todos os 9 cenários com a tag `@regressivo`.
+Disparado em **push** ou **pull request** para `develop` e também **a cada 4 horas** via cron. Executa os 5 cenários críticos com a tag `@smoke`.
 
-### Job 2 — Smoke Tests (a cada 4 horas)
+**Objetivo:** validação rápida e contínua durante o desenvolvimento, com custo reduzido de CI.
 
-Agendado via cron para rodar automaticamente a cada 4 horas. Executa apenas os 5 cenários críticos com a tag `@smoke`, garantindo monitoramento contínuo da saúde da aplicação.
+### Job 2 — Regressivo Completo (main)
 
-### Job 3 — Regressivo Completo (diário ao meio-dia)
+Disparado em **push** ou **pull request** para `main` e também **todo dia ao meio-dia** via cron. Executa todos os 9 cenários com a tag `@regressivo`.
 
-Agendado via cron para rodar todo dia às **12h00**. Executa todos os 9 cenários com a tag `@regressivo`, garantindo uma validação completa diária.
+**Objetivo:** garantia total de qualidade antes de qualquer código chegar à branch de produção.
 
-### Etapas executadas em todos os jobs
+### Resumo dos triggers
+
+| Trigger | Branch | Job | Tag executada | Cenários |
+|---------|--------|-----|---------------|----------|
+| Push / PR | `develop` | Smoke | `@smoke` | 5 |
+| Push / PR | `main` | Regressivo | `@regressivo` | 9 |
+| Cron (a cada 4h) | — | Smoke | `@smoke` | 5 |
+| Cron (meio-dia) | — | Regressivo | `@regressivo` | 9 |
+
+### Etapas executadas em ambos os jobs
 
 1. Checkout do repositório
 2. Configuração do Node.js v20

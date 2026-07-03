@@ -4,18 +4,23 @@ on:
   push:
     branches:
       - main
+      - develop
   pull_request:
     branches:
       - main
+      - develop
   schedule:
     - cron: '0 */4 * * *'   # Smoke: a cada 4 horas
     - cron: '0 12 * * *'    # Regressivo completo: todo dia ao meio-dia
 
 jobs:
   smoke:
-    name: Smoke Tests (a cada 4h)
+    name: Smoke Tests — PR/Push para develop
     runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' && github.event.schedule == '0 */4 * * *'
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/develop') ||
+      (github.event_name == 'pull_request' && github.base_ref == 'develop') ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 */4 * * *')
 
     steps:
       - name: Checkout do repositório
@@ -33,7 +38,7 @@ jobs:
       - name: Análise estática do código (lint)
         run: npm run lint
 
-      - name: Executar testes Smoke via API
+      - name: Executar testes Smoke — API
         uses: cypress-io/github-action@v6
         with:
           spec: cypress/e2e/api/**/*.cy.js
@@ -43,7 +48,7 @@ jobs:
         env:
           CYPRESS_grepTags: '@smoke'
 
-      - name: Executar testes Smoke via Frontend
+      - name: Executar testes Smoke — Frontend
         uses: cypress-io/github-action@v6
         with:
           spec: cypress/e2e/frontend/**/*.cy.js
@@ -62,9 +67,12 @@ jobs:
           if-no-files-found: ignore
 
   regressivo:
-    name: Regressivo Completo (meio-dia)
+    name: Regressivo Completo — PR/Push para main
     runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' && github.event.schedule == '0 12 * * *'
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'pull_request' && github.base_ref == 'main') ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 12 * * *')
 
     steps:
       - name: Checkout do repositório
@@ -82,7 +90,7 @@ jobs:
       - name: Análise estática do código (lint)
         run: npm run lint
 
-      - name: Executar todos os testes regressivos via API
+      - name: Executar testes Regressivos — API
         uses: cypress-io/github-action@v6
         with:
           spec: cypress/e2e/api/**/*.cy.js
@@ -92,7 +100,7 @@ jobs:
         env:
           CYPRESS_grepTags: '@regressivo'
 
-      - name: Executar todos os testes regressivos via Frontend
+      - name: Executar testes Regressivos — Frontend
         uses: cypress-io/github-action@v6
         with:
           spec: cypress/e2e/frontend/**/*.cy.js
@@ -107,49 +115,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cypress-screenshots-regressivo
-          path: cypress/screenshots
-          if-no-files-found: ignore
-
-  cypress-run:
-    name: Regressivo Completo (Push e PR)
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event_name == 'pull_request'
-
-    steps:
-      - name: Checkout do repositório
-        uses: actions/checkout@v4
-
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Instalar dependências
-        run: npm ci
-
-      - name: Análise estática do código (lint)
-        run: npm run lint
-
-      - name: Executar testes de API
-        uses: cypress-io/github-action@v6
-        with:
-          spec: cypress/e2e/api/**/*.cy.js
-          browser: chrome
-          headed: false
-
-      - name: Executar testes de Frontend
-        uses: cypress-io/github-action@v6
-        with:
-          spec: cypress/e2e/frontend/**/*.cy.js
-          browser: chrome
-          headed: false
-          install: false
-
-      - name: Upload de screenshots em caso de falha
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cypress-screenshots
           path: cypress/screenshots
           if-no-files-found: ignore
