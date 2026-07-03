@@ -7,6 +7,10 @@
     "cy:run": "cypress run",
     "cy:run:frontend": "cypress run --spec 'cypress/e2e/frontend/**/*.cy.js'",
     "cy:run:api": "cypress run --spec 'cypress/e2e/api/**/*.cy.js'",
+    "cy:run:smoke": "cypress run --env grepTags=@smoke",
+    "cy:run:regressivo": "cypress run --env grepTags=@regressivo",
+    "cy:run:frontend:smoke": "cypress run --spec 'cypress/e2e/frontend/**/*.cy.js' --env grepTags=@smoke",
+    "cy:run:api:smoke": "cypress run --spec 'cypress/e2e/api/**/*.cy.js' --env grepTags=@smoke",
     "lint": "eslint cypress/**/*.js",
     "lint:fix": "eslint cypress/**/*.js --fix"
   },
