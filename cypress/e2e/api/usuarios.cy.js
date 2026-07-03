@@ -14,7 +14,7 @@ describe('API - Usuários', () => {
     usuariosIds.forEach((id) => cy.deletarUsuarioViaApi(id))
   })
 
-  it('CT04 - Deve criar um novo usuário com sucesso via API', () => {
+  it('CT04 - Deve criar um novo usuário com sucesso via API', { tags: ['@smoke', '@regressivo', '@api'] }, () => {
     const nome = faker.person.fullName()
     const email = faker.internet.email()
 
@@ -47,7 +47,7 @@ describe('API - Usuários', () => {
     })
   })
 
-  it('CT04b - Não deve permitir cadastro com email já existente', () => {
+  it('CT04b - Não deve permitir cadastro com email já existente', { tags: ['@regressivo', '@api'] }, () => {
     const email = faker.internet.email()
     const payload = {
       nome: faker.person.fullName(),
@@ -75,7 +75,7 @@ describe('API - Usuários', () => {
     })
   })
 
-  it('CT05 - Deve autenticar o usuário e retornar token Bearer válido', () => {
+  it('CT05 - Deve autenticar o usuário e retornar token Bearer válido', { tags: ['@smoke', '@regressivo', '@api'] }, () => {
     const email = faker.internet.email()
 
     cy.request({

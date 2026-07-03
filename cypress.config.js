@@ -1,4 +1,5 @@
 const { defineConfig } = require('cypress')
+const cypressGrep = require('@cypress/grep/src/plugin')
 
 module.exports = defineConfig({
   e2e: {
@@ -15,6 +16,9 @@ module.exports = defineConfig({
       runMode: 2,
       openMode: 0,
     },
-    setupNodeEvents(on, config) {},
+    setupNodeEvents(on, config) {
+      cypressGrep(config)
+      return config
+    },
   },
 })

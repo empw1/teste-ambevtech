@@ -11,6 +11,7 @@
     "lint:fix": "eslint cypress/**/*.js --fix"
   },
   "devDependencies": {
+    "@cypress/grep": "^3.1.5",
     "@faker-js/faker": "^10.5.0",
     "cypress": "^13.17.0",
     "eslint": "^10.6.0",
